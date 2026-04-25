@@ -457,6 +457,10 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
     safeSet(ui.overlayTitle, reason);
     const score = Math.floor(state.score);
+const isNewRecord = score > Math.floor(state.hiScore || 0);
+if (isNewRecord) {
+  state.hiScore = score;
+}
 const rank = calcRank(score);
 
 let rankColor = "#6cf";
@@ -474,7 +478,8 @@ ui.overlayText.innerHTML = `
     RANK ${rank}
   </div>
 
-  <div style="font-size:20px; margin-bottom:6px;">
+  ${isNewRecord ? `<div style="color:gold; font-weight:bold; margin-bottom:6px;">★ NEW RECORD ★</div>` : ""}
+<div style="font-size:20px; margin-bottom:6px;">
     SCORE ${score}
   </div>
 
@@ -505,7 +510,13 @@ ui.overlayText.innerHTML = `
       copyBtn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
         try {
-          await navigator.clipboard.writeText(state.lastResult || buildResultText(reason));
+          await const shareText = `🚀 Vertical Shooter S-Rank v6.6.0
+🏆 RANK: ${rank}
+💯 SCORE: ${score}
+🎯 STAGE: ${state.stage} (DIFF ${settings.difficulty})
+🔥 COMBO: ${state.combo} / GRAZE: ${state.graze}`;
+
+await navigator.clipboard.writeText(shareText);
           showMessage("RESULT COPIED", 60);
         } catch (e) {
           console.warn(e);
@@ -1446,6 +1457,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
