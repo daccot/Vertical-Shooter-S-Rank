@@ -438,7 +438,26 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     ].join("\n");
   }
 
-  function showResult(reason = "GAME OVER") {
+  function saveScoreHistory(entry) {
+  try {
+    const key = "vsr_score_history";
+    let list = JSON.parse(localStorage.getItem(key) || "[]");
+    list.unshift(entry);
+    list = list.slice(0, 10);
+    localStorage.setItem(key, JSON.stringify(list));
+  } catch (e) {
+    console.warn(e);
+  }
+}
+
+function getScoreHistory() {
+  try {
+    return JSON.parse(localStorage.getItem("vsr_score_history") || "[]");
+  } catch {
+    return [];
+  }
+}
+function showResult(reason = "GAME OVER") {
 
   [ui.overlayBullet1, ui.overlayBullet2, ui.overlayBullet3].forEach((el) => {
     if (el) {
@@ -479,6 +498,16 @@ if (isNewRecord) {
 }
 const rank = calcRank(score);
 
+saveScoreHistory({
+  score: score,
+  rank: rank,
+  stage: state.stage,
+  diff: settings.difficulty,
+  combo: state.combo,
+  graze: state.graze,
+  ts: Date.now()
+});
+
 let rankColor = "#6cf";
 let rankShadow = "none";
 
@@ -487,6 +516,17 @@ if (rank === "S") {
   rankShadow = "0 0 12px gold";
 }
 
+const history = getScoreHistory().slice(0, 5);
+let historyHtml = "";
+
+if (history.length) {
+  historyHtml = `
+  <div style="margin-top:12px; font-size:12px; opacity:0.75;">
+    <div style="margin-bottom:4px; font-weight:bold;">RECENT</div>
+    ${history.map(h => `SCORE ${h.score} [${h.rank}]`).join("<br>")}
+  </div>
+  `;
+}
 ui.overlayText.innerHTML = `
 <div style="text-align:center; font-family:sans-serif">
 
@@ -507,6 +547,7 @@ ui.overlayText.innerHTML = `
     COMBO ${state.combo} / GRAZE ${state.graze}
   </div>
 
+  ${historyHtml}
 </div>
 `;
 
@@ -1473,6 +1514,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
