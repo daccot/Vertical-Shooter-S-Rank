@@ -439,6 +439,10 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   }
 
   function showResult(reason = "GAME OVER") {
+
+  safeSet(ui.overlayBullet1, "");
+  safeSet(ui.overlayBullet2, "");
+  safeSet(ui.overlayBullet3, "");
     const resultText = buildResultText(reason);
     state.lastResult = resultText;
 
@@ -449,7 +453,38 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     }
 
     safeSet(ui.overlayTitle, reason);
-    safeSet(ui.overlayText, resultText);
+    const score = Math.floor(state.score);
+const rank = calcRank(score);
+
+let rankColor = "#6cf";
+let rankShadow = "none";
+
+if (rank === "S") {
+  rankColor = "gold";
+  rankShadow = "0 0 12px gold";
+}
+
+ui.overlayText.innerHTML = `
+<div style="text-align:center; font-family:sans-serif">
+
+  <div style="font-size:32px; font-weight:bold; color:${rankColor}; text-shadow:${rankShadow}; margin-bottom:10px;">
+    RANK ${rank}
+  </div>
+
+  <div style="font-size:20px; margin-bottom:6px;">
+    SCORE ${score}
+  </div>
+
+  <div style="opacity:0.8; font-size:14px;">
+    STAGE ${state.stage} / DIFF ${settings.difficulty}
+  </div>
+
+  <div style="margin-top:8px; font-size:12px; opacity:0.7;">
+    COMBO ${state.combo} / GRAZE ${state.graze}
+  </div>
+
+</div>
+`;
 
     if (ui.startBtn) {
       ui.startBtn.textContent = t("retry", "RETRY");
@@ -1408,6 +1443,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
