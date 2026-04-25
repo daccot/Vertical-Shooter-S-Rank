@@ -1,18 +1,21 @@
-
+﻿
 (() => {
   const DEFAULT_LANG = (navigator.language || 'en').toLowerCase().startsWith('ja') ? 'ja' : 'en';
+  window.__vsDefaultLang = DEFAULT_LANG;
 
   function trSafe(dict, key, fallback = "") {
     return (dict && key in dict) ? dict[key] : (fallback || key);
   }
+  window.__vsTrSafe = trSafe;
 
   async function loadLocale(lang) {
     const normalized = lang === "ja" ? "ja" : "en";
-    const url = chrome.runtime.getURL(`locales/${normalized}.json`);
+    const url = chrome.runtime.getURL(`locales/.json`);
     const res = await fetch(url, { cache: "no-cache" });
-    if (!res.ok) throw new Error(`Locale load failed: ${normalized}`);
+    if (!res.ok) throw new Error(`Locale load failed: `);
     return await res.json();
   }
+  window.__vsLoadLocale = loadLocale;
 
   async function buildAutoHUD() {
     const root = document.getElementById("ui-root");
