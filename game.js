@@ -510,7 +510,7 @@ ui.overlayText.innerHTML = `
       copyBtn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
         try {
-          await const shareText = `🚀 Vertical Shooter S-Rank v6.6.0
+          const shareText = `🚀 Vertical Shooter S-Rank v6.6.0
 🏆 RANK: ${rank}
 💯 SCORE: ${score}
 🎯 STAGE: ${state.stage} (DIFF ${settings.difficulty})
@@ -1457,6 +1457,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
