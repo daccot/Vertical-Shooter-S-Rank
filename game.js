@@ -1292,7 +1292,21 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   }
 
   if(ui.startBtn){
-    ui.startBtn.addEventListener("click", startGameFlow);
+    if (ui.startBtn) {
+  ui.startBtn.addEventListener("click", startGameFlow);
+}
+
+if (ui.overlay) {
+  ui.overlay.addEventListener("click", (ev) => {
+    if (ev.target === ui.overlay) startGameFlow();
+  });
+}
+
+setTimeout(() => {
+  if (!state.running) {
+    startGameFlow();
+  }
+}, 300);
   }
 
   updateHud();
@@ -1308,4 +1322,5 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 })();
 
 });
+
 
