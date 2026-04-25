@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   function buildResultText(reason = "GAME OVER") {
     const rank = calcRank(Math.floor(state.score));
     return [
-      "Vertical Shooter S-Rank v6.5.0",
+      "Vertical Shooter S-Rank v6.7.1",
       reason,
       `SCORE: ${Math.floor(state.score)}`,
       `HI SCORE: ${Math.floor(state.hiScore)}`,
@@ -458,6 +458,17 @@ function getScoreHistory() {
   }
 }
 function showResult(reason = "GAME OVER") {
+  // v6.7.1: remove obsolete intro bullet list from result screen
+  setTimeout(() => {
+    const panel = ui.overlayText ? ui.overlayText.parentElement : null;
+    if (panel) {
+      panel.querySelectorAll("ul, li").forEach((el) => {
+        el.innerHTML = "";
+        el.style.display = "none";
+      });
+    }
+  }, 0);
+
 
   [ui.overlayBullet1, ui.overlayBullet2, ui.overlayBullet3].forEach((el) => {
     if (el) {
@@ -521,9 +532,28 @@ let historyHtml = "";
 
 if (history.length) {
   historyHtml = `
-  <div style="margin-top:12px; font-size:12px; opacity:0.75;">
-    <div style="margin-bottom:4px; font-weight:bold;">RECENT</div>
-    ${history.map(h => `SCORE ${h.score} [${h.rank}]`).join("<br>")}
+  <div style="margin-top:16px;">
+    <div style="font-size:12px; opacity:0.75; margin-bottom:6px; font-weight:bold; letter-spacing:0.08em;">
+      RECENT RUNS
+    </div>
+    ${history.map((h, i) => `
+      <div style="
+        background: rgba(255,255,255,0.07);
+        border: 1px solid rgba(120,180,255,0.18);
+        border-radius: 8px;
+        padding: 6px 10px;
+        margin: 4px auto;
+        max-width: 260px;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      ">
+        <span>#${i + 1}</span>
+        <span>RANK ${h.rank}</span>
+        <span>${h.score}</span>
+      </div>
+    `).join("")}
   </div>
   `;
 }
@@ -567,7 +597,7 @@ ui.overlayText.innerHTML = `
       copyBtn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
         try {
-          const shareText = `🚀 Vertical Shooter S-Rank v6.6.0
+          const shareText = `🚀 Vertical Shooter S-Rank v6.7.1
 🏆 RANK: ${rank}
 💯 SCORE: ${score}
 🎯 STAGE: ${state.stage} (DIFF ${settings.difficulty})
@@ -1534,3 +1564,4 @@ setTimeout(() => {
     oldList.style.display = "none";
   }
 }, 0);
+
