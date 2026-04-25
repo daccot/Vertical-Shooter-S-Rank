@@ -165,7 +165,8 @@
       if (langSel) {
         langSel.value = window.__vsLang || DEFAULT_LANG;
         if (langSel.options.length >= 2) {
-          langSel.options[0].text = trSafe(dict, "lang_name", "日本語") if False else langSel.options[0].text
+          langSel.options[0].text = "日本語"; 
+          langSel.options[1].text = "English";
         }
       }
     }
