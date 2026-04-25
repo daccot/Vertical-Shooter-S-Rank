@@ -19,4 +19,5 @@ Slow: Shift
 Overdrive: V  
 
 ## Version
-v1.0.0
+v7.0.0
+

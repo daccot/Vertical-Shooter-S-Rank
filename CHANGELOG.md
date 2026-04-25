@@ -1,6 +1,6 @@
 ﻿# CHANGELOG
 
-## v1.0.0
+## v7.0.0
 - Stable release
 - Result screen UI
 - NEW RECORD system
@@ -9,3 +9,4 @@
 
 ## v6.x
 - Iterative UI and gameplay improvements
+

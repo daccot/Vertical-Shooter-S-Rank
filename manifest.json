@@ -1,7 +1,7 @@
 ﻿{
   "manifest_version": 3,
   "name": "Vertical Shooter S-Rank",
-  "version": "1.0.0",
+  "version": "7.0.0",
   "description": "A browser-based vertical shooter with multilingual UI, dynamic language switching, BGM, and local high score support.",
   "action": {
     "default_title": "Vertical Shooter S-Rank",
@@ -33,6 +33,7 @@
     }
   ]
 }
+
 
 
 
