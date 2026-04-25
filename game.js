@@ -10,9 +10,9 @@
 
   async function loadLocale(lang) {
     const normalized = lang === "ja" ? "ja" : "en";
-    const url = chrome.runtime.getURL(`locales/.json`);
+    const url = chrome.runtime.getURL(`locales/${normalized}.json`);
     const res = await fetch(url, { cache: "no-cache" });
-    if (!res.ok) throw new Error(`Locale load failed: `);
+    if (!res.ok) throw new Error(`Locale load failed: ${normalized}`);
     return await res.json();
   }
   window.__vsLoadLocale = loadLocale;
@@ -1308,3 +1308,4 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 })();
 
 });
+
