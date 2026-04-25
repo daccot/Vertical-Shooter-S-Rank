@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     running:false, paused:false, gameOver:false, score:0, hiScore:Number(localStorage.getItem(HI_KEY)||0),
     stage:1, frame:0, stageTimer:0, stars:[], bullets:[], enemyBullets:[], enemies:[], items:[], effects:[], hazards:[], beams:[],
     player:null, midboss:null, boss:null, messageTimer:0, shake:0, hitstop:0, warningTimer:0, clearTimer:0, enemyBulletCap:27,
-    logs:loadLogs(), areaName:"NORMAL", combo:0, comboTimer:0, noMissTimer:0, overdriveTimer:0, overdriveCooldown:0, multiplier:1.0, graze:0, spawnCursor:0
+    logs:loadLogs(), areaName:"NORMAL", combo:0, comboTimer:0, noMissTimer:0, overdriveTimer:0, overdriveCooldown:0, multiplier:1.0, graze:0, spawnCursor:0, lastResult:null
   };
 
   function areaForStage(stage){
@@ -414,6 +414,67 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     safeSet(ui.multiplier, state.multiplier.toFixed(1)); safeSet(ui.graze, state.graze); safeSet(ui.overdriveText, state.overdriveTimer>0?`${t("on","ON")} ${Math.ceil(state.overdriveTimer/60)}`:(state.overdriveCooldown>0?`${t("cd","CD")} ${Math.ceil(state.overdriveCooldown/60)}`:t("ready","READY")));
     safeSet(ui.difficultyView, `DIFF ${settings.difficulty}`); safeSet(ui.comboView, `${t("combo","COMBO")} ${state.combo}`); safeSet(ui.riskView, `${t("risk","RISK")} x${state.multiplier.toFixed(1)}`); safeSet(ui.formationView, `${t("formation","FORM")} ${state.player ? t(state.player.formation==="focus"?"form_focus":"form_wide", state.player.formation.toUpperCase()) : t("form_wide","WIDE")}`);
     updateBossHud();
+  }
+
+  function calcRank(score) {
+    if (score >= 200000) return "S";
+    if (score >= 120000) return "A";
+    if (score >= 60000) return "B";
+    return "C";
+  }
+
+  function buildResultText(reason = "GAME OVER") {
+    const rank = calcRank(Math.floor(state.score));
+    return [
+      "Vertical Shooter S-Rank v6.5.0",
+      reason,
+      `SCORE: ${Math.floor(state.score)}`,
+      `HI SCORE: ${Math.floor(state.hiScore)}`,
+      `STAGE: ${state.stage}`,
+      `DIFFICULTY: ${settings.difficulty}`,
+      `COMBO: ${state.combo}`,
+      `GRAZE: ${state.graze}`,
+      `RANK: ${rank}`
+    ].join("\n");
+  }
+
+  function showResult(reason = "GAME OVER") {
+    const resultText = buildResultText(reason);
+    state.lastResult = resultText;
+
+    if (ui.overlay) {
+      ui.overlay.classList.remove("hidden");
+      ui.overlay.classList.add("show");
+      ui.overlay.style.pointerEvents = "auto";
+    }
+
+    safeSet(ui.overlayTitle, reason);
+    safeSet(ui.overlayText, resultText);
+
+    if (ui.startBtn) {
+      ui.startBtn.textContent = t("retry", "RETRY");
+    }
+
+    let copyBtn = document.getElementById("copyResultBtn");
+    if (!copyBtn && ui.startBtn && ui.startBtn.parentElement) {
+      copyBtn = document.createElement("button");
+      copyBtn.id = "copyResultBtn";
+      copyBtn.type = "button";
+      copyBtn.textContent = "COPY RESULT";
+      copyBtn.style.marginLeft = "8px";
+      ui.startBtn.parentElement.appendChild(copyBtn);
+
+      copyBtn.addEventListener("click", async (ev) => {
+        ev.stopPropagation();
+        try {
+          await navigator.clipboard.writeText(state.lastResult || buildResultText(reason));
+          showMessage("RESULT COPIED", 60);
+        } catch (e) {
+          console.warn(e);
+          showMessage("COPY FAILED", 60);
+        }
+      });
+    }
   }
 
   function updateDebug(){
@@ -679,7 +740,12 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     if(p.shield>0){p.shield--; p.invuln=60; state.shake=6; spawnEffect(p.x,p.y,"shield",26,"#60a5fa",3); sfx.shield(); updateHud(); return;}
     p.lives--; p.invuln=140; p.power=Math.max(1,p.power-1); p.options=Math.max(0,p.options-1);
     state.noMissTimer=0; resetCombo(); flashDamage(); spawnEffect(p.x,p.y,"player",34,"#67e8f9",3); state.shake=12; state.hitstop=5; sfx.damage(); updateHud();
-    if(p.lives<0){state.running=false; state.gameOver=true; if(ui.overlay){ui.overlay.classList.remove("hidden"); ui.overlay.classList.add("show"); ui.overlay.style.pointerEvents="auto"}; safeSet(ui.overlayTitle, t("game_over","GAME OVER")); safeSet(ui.overlayText, `${t("score","SCORE")} ${Math.floor(state.score)}`); safeSet(ui.startBtn, t("retry","RETRY")); pauseBGM();}
+    if(p.lives<0){
+      state.running=false;
+      state.gameOver=true;
+      pauseBGM();
+      showResult(t("game_over","GAME OVER"));
+    }
     else{p.x=W/2; p.y=H-90;}
   }
 
@@ -1342,6 +1408,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
