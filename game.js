@@ -271,7 +271,13 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     const langSel = document.getElementById("languageSelect");
     if (langSel) langSel.value = normalized;
 
-    updateHud();
+    try {
+      updateHud();
+    } catch (e) {
+      if (!String(e).includes("state")) {
+        throw e;
+      }
+    }
   }
 
   const SETTINGS_KEY = "verticalShooterSRankV63Settings";
