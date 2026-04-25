@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Vertical Shooter S-Rank v6.3 Full i18n",
-  "version": "6.3.0",
-  "description": "Full multilingual support with external JSON locale files and dynamic switching.",
+  "name": "Vertical Shooter S-Rank",
+  "version": "6.4.0",
+  "description": "A browser-based vertical shooter with multilingual UI, dynamic language switching, BGM, and local high score support.",
   "action": {
-    "default_title": "Vertical Shooter S-Rank v5",
+    "default_title": "Vertical Shooter S-Rank",
     "default_popup": "popup.html"
   },
   "icons": {
