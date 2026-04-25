@@ -440,9 +440,12 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
   function showResult(reason = "GAME OVER") {
 
-  safeSet(ui.overlayBullet1, "");
-  safeSet(ui.overlayBullet2, "");
-  safeSet(ui.overlayBullet3, "");
+  [ui.overlayBullet1, ui.overlayBullet2, ui.overlayBullet3].forEach((el) => {
+    if (el) {
+      el.textContent = "";
+      el.style.display = "none";
+    }
+  });
     const resultText = buildResultText(reason);
     state.lastResult = resultText;
 
@@ -1443,6 +1446,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
