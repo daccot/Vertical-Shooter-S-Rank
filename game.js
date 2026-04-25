@@ -1525,3 +1525,12 @@ setTimeout(() => {
 
 
 
+
+// v6.7.1 force remove old overlay bullets
+setTimeout(() => {
+  const oldList = document.querySelector("#ui-root ul");
+  if (oldList) {
+    oldList.innerHTML = "";
+    oldList.style.display = "none";
+  }
+}, 0);
