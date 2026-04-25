@@ -446,6 +446,22 @@ document.addEventListener('DOMContentLoaded', async ()=>{
       el.style.display = "none";
     }
   });
+  // v6.6.2: Hide obsolete intro bullet list on result screen
+  const resultBulletList =
+    (ui.overlayBullet1 && ui.overlayBullet1.parentElement) ||
+    (ui.overlayBullet2 && ui.overlayBullet2.parentElement) ||
+    (ui.overlayBullet3 && ui.overlayBullet3.parentElement);
+
+  if (resultBulletList) {
+    resultBulletList.style.display = "none";
+  }
+
+  [ui.overlayBullet1, ui.overlayBullet2, ui.overlayBullet3].forEach((el) => {
+    if (el) {
+      el.textContent = "";
+      el.style.display = "none";
+    }
+  });
     const resultText = buildResultText(reason);
     state.lastResult = resultText;
 
@@ -1457,6 +1473,7 @@ setTimeout(() => {
 })();
 
 });
+
 
 
 
