@@ -187,6 +187,20 @@ document.addEventListener('DOMContentLoaded', async ()=>{
 
 (async () => {
   "use strict";
+
+  const DEFAULT_LANG =
+    window.__vsDefaultLang ||
+    ((navigator.language || "en").toLowerCase().startsWith("ja") ? "ja" : "en");
+
+  const trSafe =
+    window.__vsTrSafe ||
+    ((dict, key, fallback = "") =>
+      dict && key in dict ? dict[key] : fallback || key);
+
+  const loadLocale =
+    window.__vsLoadLocale ||
+    (async () => ({}));
+
   await (window.__vsBuildHUDPromise || Promise.resolve());
   const canvas = document.getElementById("gameCanvas");
   const ctx = canvas.getContext("2d");
@@ -1322,5 +1336,6 @@ setTimeout(() => {
 })();
 
 });
+
 
 
